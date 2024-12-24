@@ -1,0 +1,1 @@
+# Plant Disease Detector - Frontend
