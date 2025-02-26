@@ -1,1 +1,4 @@
-# Garden route
+from fastapi import APIRouter
+
+
+router = APIRouter()
