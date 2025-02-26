@@ -1,0 +1,51 @@
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+from sqlalchemy import ForeignKey, Text
+
+from .repository import Base, uuid_pk, str_uniq, str_null_true
+
+
+class User(Base):
+    id: Mapped[uuid_pk] = mapped_column(primary_key=True)
+    name: Mapped[str_null_true]
+    email: Mapped[str_uniq]
+    password: Mapped[str_uniq]
+
+    historys: Mapped[list["History"]] = relationship("History", back_populates="user")
+
+    def __str__(self):
+        return f"{self.__class__.__name__}(id={self.id}, email={self.email!r})"
+
+    def __repr__(self):
+        return str(self)
+
+
+class Disease(Base):
+
+    id: Mapped[uuid_pk] = mapped_column(primary_key=True)
+    name: Mapped[str_uniq]
+    reason: Mapped[str] = mapped_column(Text, nullable=True)
+    recommendations: Mapped[str] = mapped_column(Text, nullable=True)
+
+    historys: Mapped[list["History"]] = relationship(
+        "History", back_populates="disease"
+    )
+
+    def __str__(self):
+        return f"{self.__class__.__name__}(id={self.id}, name={self.name!r})"
+
+    def __repr__(self):
+        return str(self)
+
+
+class History(Base):
+
+    id: Mapped[uuid_pk] = mapped_column(primary_key=True)
+    user_id: Mapped[uuid_pk] = mapped_column(
+        ForeignKey("plant_diseases.users.id"), nullable=False
+    )
+    disease_id: Mapped[uuid_pk] = mapped_column(
+        ForeignKey("plant_diseases.diseases.id"), nullable=False
+    )
+
+    user: Mapped["User"] = relationship("User", back_populates="historys")
+    disease: Mapped["Disease"] = relationship("Disease", back_populates="historys")

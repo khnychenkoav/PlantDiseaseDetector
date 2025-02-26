@@ -28,6 +28,7 @@ str_null_true = Annotated[str, mapped_column(nullable=True)]
 
 class Base(AsyncAttrs, DeclarativeBase):
     __abstract__ = True
+    __table_args__ = {"schema": "plant_diseases"}
 
     @declared_attr.directive
     def __tablename__(cls) -> str:

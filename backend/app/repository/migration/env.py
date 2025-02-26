@@ -13,14 +13,12 @@ from os.path import dirname, abspath
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 from app.repository.repository import DATABASE_URL, Base
-from app.repository.models.history import History
-from app.repository.models.user import User
-from app.repository.models.disease import Disease
+from app.repository.models import User, Disease, History
+
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.
@@ -38,6 +36,13 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+
+def include_name(name, type_, parent_names):
+    # Игнорировать все, кроме схемы "plant_diseases"
+    if type_ == "schema" and name != "plant_diseases":
+        return False
+    return True
 
 
 def run_migrations_offline() -> None:
@@ -58,6 +63,9 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        include_schemas=True,  # Включает поддержку схем
+        version_table_schema="plant_diseases",
+        include_name=include_name,
     )
 
     with context.begin_transaction():
@@ -65,7 +73,13 @@ def run_migrations_offline() -> None:
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        include_schemas=True,  # Включает поддержку схем
+        version_table_schema="plant_diseases",
+        include_name=include_name,
+    )
 
     with context.begin_transaction():
         context.run_migrations()
