@@ -1,9 +1,10 @@
 import uuid
-from passlib.hash import bcrypt
+
 
 from app.repository.repository import async_session_maker
 from app.repository.models import User
 from app.dao.base import BaseDAO
+from app.services.security import get_password_hash
 
 
 class UserDAO(BaseDAO):
@@ -12,7 +13,7 @@ class UserDAO(BaseDAO):
     @classmethod
     async def create_user(cls, name: str, email: str, password: str) -> User:
         async with async_session_maker() as session:
-            hashed_password = bcrypt.hash(password)
+            hashed_password = get_password_hash(password)
             user = User(
                 id=uuid.uuid4(), email=email, name=name, password=hashed_password
             )

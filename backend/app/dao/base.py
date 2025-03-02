@@ -6,8 +6,26 @@ class BaseDAO:
     model = None
 
     @classmethod
-    async def find_all(cls):
+    async def find_all(cls, **filter_by):
+        """
+        Находит все записи в базе данных по переданным фильтрам.
+        Возвращает список объектов.
+        """
         async with async_session_maker() as session:
-            query = select(cls.model)
+            query = select(cls.model).filter_by(**filter_by)
             result = await session.execute(query)
-            return result.scalars().all()
+            objects = result.scalars().all()
+            for obj in objects:
+                delattr(obj, "password")
+            return objects
+
+    @classmethod
+    async def find_one_or_none(cls, **filter_by):
+        """
+        Находит одну запись в базе данных по переданным фильтрам.
+        Возвращает объект модели или None, если запись не найдена.
+        """
+        async with async_session_maker() as session:
+            query = select(cls.model).filter_by(**filter_by)
+            result = await session.execute(query)
+            return result.scalars().first()

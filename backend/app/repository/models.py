@@ -1,5 +1,5 @@
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from sqlalchemy import ForeignKey, Text
+from sqlalchemy import ForeignKey, Text, text
 
 from .repository import Base, uuid_pk, str_uniq, str_null_true
 
@@ -11,6 +11,17 @@ class User(Base):
     password: Mapped[str_uniq]
 
     historys: Mapped[list["History"]] = relationship("History", back_populates="user")
+    is_user: Mapped[bool] = mapped_column(
+        default=True, server_default=text("true"), nullable=False
+    )
+    is_admin: Mapped[bool] = mapped_column(
+        default=False, server_default=text("false"), nullable=False
+    )
+    is_super_admin: Mapped[bool] = mapped_column(
+        default=False, server_default=text("false"), nullable=False
+    )
+
+    extend_existing = True
 
     def __str__(self):
         return f"{self.__class__.__name__}(id={self.id}, email={self.email!r})"
