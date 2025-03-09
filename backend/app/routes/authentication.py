@@ -10,17 +10,6 @@ from app.services.jwt import create_access_token, get_current_user
 router = APIRouter()
 
 
-@router.post("/logout/", summary="Выйти")
-async def logout_user(response: Response):
-    response.delete_cookie(key="users_access_token")
-    return {"message": "Пользователь успешно вышел из системы"}
-
-
-@router.get("/me/", summary="Получить данные")
-async def get_me(user_data: User = Depends(get_current_user)):
-    return user_data
-
-
 @router.post("/login/", summary="Авторизироваться")
 async def login(response: Response, user_data: UserInLogin = Depends()):
     user = await UserDAO.find_one_or_none(email=user_data.email)
@@ -39,7 +28,7 @@ async def login(response: Response, user_data: UserInLogin = Depends()):
     return {"access_token": access_token, "refresh_token": None}
 
 
-@router.post("/register/", summary="Зарегистрироваться")
+@router.post("/register/", summary="Зарегистрироваться", response_model=UserResponse)
 async def register(user_data: UserInCreate = Depends()) -> UserResponse:
     user = await UserDAO.find_one_or_none(email=user_data.email)
     if user:

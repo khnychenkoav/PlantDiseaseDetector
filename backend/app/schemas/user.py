@@ -24,3 +24,11 @@ class UserResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     email: str
     name: str
+
+
+class UserChangeRole(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    email: str
+    is_user: bool = Field(default=True)
+    is_admin: bool = Field(default=False)
+    is_super_admin: bool = Field(default=False)

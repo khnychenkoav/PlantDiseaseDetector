@@ -1,4 +1,7 @@
 import uuid
+from sqlalchemy.future import select
+from sqlalchemy.exc import NoResultFound
+from typing import Dict, Any
 
 
 from app.repository.repository import async_session_maker
@@ -18,6 +21,25 @@ class UserDAO(BaseDAO):
                 id=uuid.uuid4(), email=email, name=name, password=hashed_password
             )
             session.add(user)
+            await session.commit()
+            await session.refresh(user)
+            return user
+
+    @classmethod
+    async def update_user(cls, update_data: Dict[str, Any]) -> User:
+        async with async_session_maker() as session:
+            result = await session.execute(
+                select(User).where(User.email == update_data["email"])
+            )
+            user = result.scalars().first()
+
+            if not user:
+                raise NoResultFound(f"Пользователь не найден")
+
+            for key, value in update_data.items():
+                if hasattr(user, key):
+                    setattr(user, key, value)
+
             await session.commit()
             await session.refresh(user)
             return user
