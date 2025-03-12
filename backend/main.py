@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.api import router as api_router
-
-from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
