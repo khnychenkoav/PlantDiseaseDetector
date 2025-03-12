@@ -1,7 +1,8 @@
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import ForeignKey, Text, text
+import uuid
 
-from .repository import Base, uuid_pk, str_uniq, str_null_true
+from .repository import Base, uuid_pk, str_uniq, str_null_true, uuid_not_pk
 
 
 class User(Base):
@@ -51,12 +52,17 @@ class Disease(Base):
 class History(Base):
 
     id: Mapped[uuid_pk] = mapped_column(primary_key=True)
-    user_id: Mapped[uuid_pk] = mapped_column(
-        ForeignKey("plant_diseases.users.id"), nullable=False
+    user_id: Mapped[uuid_not_pk] = mapped_column(
+        ForeignKey("plant_diseases.users.id"),
+        nullable=False,
+        primary_key=False,
     )
-    disease_id: Mapped[uuid_pk] = mapped_column(
-        ForeignKey("plant_diseases.diseases.id"), nullable=False
+    disease_id: Mapped[uuid_not_pk] = mapped_column(
+        ForeignKey("plant_diseases.diseases.id"),
+        nullable=False,
+        primary_key=False,
     )
+    image_path: Mapped[str_uniq] = mapped_column(nullable=False)
 
     user: Mapped["User"] = relationship("User", back_populates="historys")
     disease: Mapped["Disease"] = relationship("Disease", back_populates="historys")

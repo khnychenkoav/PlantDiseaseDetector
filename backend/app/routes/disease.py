@@ -1,10 +1,17 @@
 import os
 import shutil
+import uuid
 
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Depends
 
 
 from app.services.security import get_hashed_path
+from app.services.jwt import get_current_user
+from app.repository.models import User
+from app.dao.disease import DiseaseDAO
+from app.dao.history import HistoryDAO
+from app.schemas.disease import DiseasesInCreate
+from app.depends.user import get_current_admin_user
 
 
 router = APIRouter()
@@ -13,15 +20,30 @@ UPLOAD_DIR = "uploads"
 
 
 @router.post("/upload/", summary="Загрузить фотографию растения")
-async def upload_file(file: UploadFile = File(...)):
-
+async def upload_file(
+    file: UploadFile = File(...),
+    user: User = Depends(get_current_user),
+):
     subfolder = get_hashed_path(file.filename)
     save_dir = os.path.join(UPLOAD_DIR, subfolder)
     os.makedirs(save_dir, exist_ok=True)
 
     file_path = os.path.join(save_dir, file.filename)
-
+    diseases = await DiseaseDAO.find_one_or_none(name="ОпаснаяБолезнь")
+    await HistoryDAO.create_record(user.id, diseases.id, file_path)
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
     return {"filename": file.filename, "path": file_path}
+
+
+@router.post("/create/", summary="Создать запись растения")
+async def create(
+    disease: DiseasesInCreate = Depends(),
+    admin: User = Depends(get_current_admin_user),
+):
+    await DiseaseDAO.create_record(
+        disease.name,
+        disease.reason,
+        disease.recommendation,
+    )

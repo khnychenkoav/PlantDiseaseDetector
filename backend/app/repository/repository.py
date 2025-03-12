@@ -15,6 +15,9 @@ engine = create_async_engine(DATABASE_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 
+uuid_not_pk = Annotated[
+    uuid.UUID, mapped_column(UUID(as_uuid=True), primary_key=False, default=uuid.uuid4)
+]
 uuid_pk = Annotated[
     uuid.UUID, mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
 ]
