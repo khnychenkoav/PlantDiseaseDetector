@@ -1,8 +1,11 @@
 import uuid
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from app.repository.repository import async_session_maker
 from app.dao.base import BaseDAO
 from app.repository.models import History
+from app.schemas.disease import DiseasesInResponse
 
 
 class HistoryDAO(BaseDAO):
@@ -23,3 +26,15 @@ class HistoryDAO(BaseDAO):
             await session.commit()
             await session.refresh(record)
             return record
+
+    @classmethod
+    async def get_history(cls, user_id: uuid.UUID):
+        async with async_session_maker() as session:
+            query = (
+                select(History)
+                .options(joinedload(History.user), joinedload(History.disease))
+                .filter_by(user_id=user_id)
+            )
+            result = await session.execute(query)
+            objects = result.scalars().all()
+        return objects

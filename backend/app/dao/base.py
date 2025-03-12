@@ -15,8 +15,6 @@ class BaseDAO:
             query = select(cls.model).filter_by(**filter_by)
             result = await session.execute(query)
             objects = result.scalars().all()
-            for obj in objects:
-                delattr(obj, "password")
             return objects
 
     @classmethod

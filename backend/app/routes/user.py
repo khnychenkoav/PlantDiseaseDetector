@@ -10,8 +10,10 @@ from app.depends.user import get_current_admin_user
 router = APIRouter()
 
 
-@router.get("/all/")
-async def get_all_users() -> list[UserResponse]:
+@router.get("/all/", summary="Получить всех пользователей")
+async def get_all_users(
+    admin: User = Depends(get_current_admin_user),
+) -> list[UserResponse]:
     return await UserDAO.find_all()
 
 
