@@ -38,13 +38,6 @@ target_metadata = Base.metadata
 # ... etc.
 
 
-def include_name(name, type_, parent_names):
-    # Игнорировать все, кроме схемы "plant_diseases"
-    if type_ == "schema" and name != "plant_diseases":
-        return False
-    return True
-
-
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
 
@@ -63,9 +56,6 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        include_schemas=True,  # Включает поддержку схем
-        version_table_schema="plant_diseases",
-        include_name=include_name,
     )
 
     with context.begin_transaction():
@@ -76,9 +66,6 @@ def do_run_migrations(connection: Connection) -> None:
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
-        include_schemas=True,  # Включает поддержку схем
-        version_table_schema="plant_diseases",
-        include_name=include_name,
     )
 
     with context.begin_transaction():

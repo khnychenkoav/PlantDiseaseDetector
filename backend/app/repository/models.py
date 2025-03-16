@@ -53,12 +53,12 @@ class History(Base):
 
     id: Mapped[uuid_pk] = mapped_column(primary_key=True)
     user_id: Mapped[uuid_not_pk] = mapped_column(
-        ForeignKey("plant_diseases.users.id"),
+        ForeignKey("users.id"),
         nullable=False,
         primary_key=False,
     )
     disease_id: Mapped[uuid_not_pk] = mapped_column(
-        ForeignKey("plant_diseases.diseases.id"),
+        ForeignKey("diseases.id"),
         nullable=False,
         primary_key=False,
     )

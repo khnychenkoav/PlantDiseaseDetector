@@ -5,7 +5,6 @@ from sqlalchemy.orm import joinedload
 from app.repository.repository import async_session_maker
 from app.dao.base import BaseDAO
 from app.repository.models import History
-from app.schemas.disease import DiseasesInResponse
 
 
 class HistoryDAO(BaseDAO):

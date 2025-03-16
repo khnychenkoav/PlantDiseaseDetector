@@ -28,7 +28,7 @@ async def get_me(user_data: User = Depends(get_current_user)):
     return user_data
 
 
-@router.post("/change_role/", summary="Изменить роль пользователя")
+@router.put("/change_role/", summary="Изменить роль пользователя")
 async def change_role(
     admin: User = Depends(get_current_admin_user),
     user_data: UserChangeRole = Depends(),
