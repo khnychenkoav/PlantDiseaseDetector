@@ -24,7 +24,6 @@ export default function SignUp() {
         .required(),
     }),
     handleSubmit = async (values) => {
-      // Handle sign-up logic here
       toast.success("Signed up successfully!");
     };
 

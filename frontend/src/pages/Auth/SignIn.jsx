@@ -16,7 +16,6 @@ export default function SignIn() {
       password: Yup.string().required(),
     }),
     handleSubmit = async (values) => {
-      // Handle sign-in logic here
       toast.success("Signed in successfully!");
     };
 

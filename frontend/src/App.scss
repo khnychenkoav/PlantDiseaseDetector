@@ -44,7 +44,6 @@ body {
   }
 }
 
-// Bootstrap
 $navbar-light-active-color: $color;
 $primary: $color;
 $secondary: $color-2;
@@ -86,5 +85,4 @@ $light: $color-3;
   border-bottom-right-radius: 0 !important;
 }
 
-// Bootstrap Icons
 @import "~bootstrap-icons/font/bootstrap-icons.css";

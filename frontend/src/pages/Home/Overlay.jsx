@@ -14,7 +14,7 @@ export default function Overlay() {
         <section 
           id='job-advert-search' 
           className='d-flex flex-column justify-content-center align-items-center text-center w-100'
-          style={{ padding: '20px' }} // Добавлен внутренний отступ для красоты
+          style={{ padding: '20px' }}
         >
           <div className='w-100'>
             <h1 className='display-1 fw-bold text-primary mb-3'>

@@ -1,30 +1,28 @@
-/* Градиент для футера */
 .footer-gradient {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white; /* Белый текст для контраста */
-    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1); /* Тень сверху */
+    color: white;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  /* Стили для текста и ссылок */
   .footer-gradient .text-muted {
-    color: rgba(255, 255, 255, 0.8) !important; /* Полупрозрачный белый */
+    color: rgba(255, 255, 255, 0.8) !important;
   }
   
   .footer-gradient .text-secondary {
-    color:rgb(255, 255, 255) !important; /* Светлый оттенок для заголовков */
+    color:rgb(255, 255, 255) !important;
   }
   
   .footer-gradient a {
-    color: rgba(255, 255, 255, 0.8) !important; /* Полупрозрачный белый для ссылок */
+    color: rgba(255, 255, 255, 0.8) !important;
   }
   
   .footer-gradient a:hover {
-    color: white !important; /* Белый цвет при наведении */
+    color: white !important;
   }
   
-  /* Стили для списка */
+
   .footer-gradient .list-group-item {
-    background: transparent; /* Прозрачный фон для элементов списка */
-    border: none; /* Убираем границы */
-    padding-left: 0; /* Убираем отступ слева */
+    background: transparent;
+    border: none;
+    padding-left: 0;
   }
