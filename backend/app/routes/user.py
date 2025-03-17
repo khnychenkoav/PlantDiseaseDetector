@@ -30,8 +30,8 @@ async def get_me(user_data: User = Depends(get_current_user)):
 
 @router.put("/change_role/", summary="Изменить роль пользователя")
 async def change_role(
+    user_data: UserChangeRole,
     admin: User = Depends(get_current_admin_user),
-    user_data: UserChangeRole = Depends(),
 ):
     user_dict = user_data.model_dump()
     try:

@@ -38,7 +38,7 @@ async def upload_file(
 
 @router.post("/create/", summary="Создать запись растения")
 async def create(
-    disease: DiseasesInCreate = Depends(),
+    disease: DiseasesInCreate,
     admin: User = Depends(get_current_admin_user),
 ):
     await DiseaseDAO.create_record(

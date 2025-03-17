@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.post("/login/", summary="Авторизироваться")
-async def login(response: Response, user_data: UserInLogin = Depends()):
+async def login(response: Response, user_data: UserInLogin):
     user = await UserDAO.find_one_or_none(email=user_data.email)
     if not user or verify_password(user_data.password, user.password) is False:
         raise HTTPException(
@@ -29,7 +29,7 @@ async def login(response: Response, user_data: UserInLogin = Depends()):
 
 
 @router.post("/register/", summary="Зарегистрироваться", response_model=UserResponse)
-async def register(user_data: UserInCreate = Depends()) -> UserResponse:
+async def register(user_data: UserInCreate) -> UserResponse:
     user = await UserDAO.find_one_or_none(email=user_data.email)
     if user:
         raise HTTPException(
