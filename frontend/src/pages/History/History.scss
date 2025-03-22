@@ -1,0 +1,23 @@
+.history {
+    padding: 60px 0;
+  
+    h1 {
+      font-size: 3rem;
+      color: #2c3e50;
+    }
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+  
+      th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+  
+      th {
+        background-color: #f2f2f2;
+      }
+    }
+  }

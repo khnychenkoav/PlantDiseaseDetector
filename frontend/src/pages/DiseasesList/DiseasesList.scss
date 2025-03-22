@@ -1,0 +1,25 @@
+.diseases-list {
+    padding: 60px 0;
+  
+    h1 {
+      font-size: 3rem;
+      color: #2c3e50;
+    }
+  
+    .list-group-item {
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+      h5 {
+        font-size: 1.5rem;
+        color: #2980b9;
+      }
+  
+      p {
+        font-size: 1.2rem;
+        color: #34495e;
+      }
+    }
+  }
