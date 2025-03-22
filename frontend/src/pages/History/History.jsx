@@ -1,23 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axiosInstance from "../../services/axiosInstance";
 import "./History.scss";
 
 export default function History() {
-  const historyData = [
-    {
-      id: 1,
-      date: "2025-03-10",
-      plant: "Tomato",
-      disease: "Late Blight",
-      treatment: "Apply fungicide",
-    },
-    {
-      id: 2,
-      date: "2025-03-12",
-      plant: "Rose",
-      disease: "Black Spot",
-      treatment: "Remove affected leaves",
-    },
-  ];
+  const [historyData, setHistoryData] = useState([]);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await axiosInstance.get("/history/all");
+        setHistoryData(response.data);
+      } catch (error) {
+        console.error("Error fetching history data:", error);
+      }
+    };
+
+    fetchHistory();
+  }, []);
 
   return (
     <div className='container history'>
@@ -36,7 +35,7 @@ export default function History() {
             <tbody>
               {historyData.map((entry) => (
                 <tr key={entry.id}>
-                  <td>{entry.date}</td>
+                  <td>{entry.time}</td>
                   <td>{entry.plant}</td>
                   <td>{entry.disease}</td>
                   <td>{entry.treatment}</td>
