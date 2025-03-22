@@ -10,10 +10,10 @@
 
 ## Технологический стек
 - **Frontend**: Интерфейс пользователя на основе React для загрузки изображений и отображения результатов.
-- **Backend**: Python (FastAPI/Django) для обработки API-запросов, обработки изображений и взаимодействия с моделью машинного обучения.
-- **Машинное обучение**: Модель на основе TensorFlow/PyTorch для распознавания заболеваний.
+- **Backend**: Python (FastAPI) для обработки API-запросов, обработки изображений и взаимодействия с моделью машинного обучения.
+- **Машинное обучение**: Модель для распознавания заболеваний.
 - **База данных**: PostgreSQL для хранения данных о болезнях, пользователях и схемах сада.
-- **Хранилище**: S3/MinIO для сохранения загруженных изображений.
+- **Хранилище**: Локальное хранилище для сохранения загруженных изображений.
 
 ## Структура проекта
 ```
@@ -21,31 +21,30 @@ project_root/
 ├── frontend/
 │   ├── public/
 │   ├── src/
+│   │   ├── assets/
 │   │   ├── components/
-│   │   │   ├── UploadForm.js
-│   │   │   ├── ResultView.js
-│   │   │   ├── GardenMap.js
-│   │   └── App.js
+│   │   ├── layouts/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── App.jsx
+│   │   ├── App.scss
+│   │   ├── index.js
+│   │   ├── reportWebVitals.js
+│   │   └── setupTests.js
 │   ├── package.json
-│   ├── webpack.config.js
 │   └── README.md
 ├── backend/
 │   ├── app/
-│   │   ├── main.py
-│   │   ├── models/
-│   │   │   ├── disease_model.py
-│   │   │   ├── user.py
-│   │   │   └── garden.py
+│   │   ├── dao/
+│   │   ├── depends/
+│   │   ├── repository/
 │   │   ├── routes/
-│   │   │   ├── image_analysis.py
-│   │   │   ├── recommendations.py
-│   │   │   └── garden.py
 │   │   ├── schemas/
-│   │   │   ├── disease.py
-│   │   │   ├── user.py
-│   │   │   └── garden.py
-│   │   ├── database.py
-│   │   └── config.py
+│   │   ├── services/
+│   │   ├── config.py
+│   │   └── main.py
+│   ├── alembic.ini
+│   ├── Dockerfile.backend
 │   ├── requirements.txt
 │   └── README.md
 ├── ml_model/
@@ -98,7 +97,6 @@ project_root/
 ## Использование
 1. Загрузите изображение растения через интерфейс.
 2. Просмотрите результаты анализа и рекомендации по лечению.
-3. Используйте карту сада для управления вашими растениями и их здоровьем.
 
 ## Лицензия
 Этот проект лицензируется под лицензией MIT. Подробности см. в файле [LICENSE](LICENSE).
