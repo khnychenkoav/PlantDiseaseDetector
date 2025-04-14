@@ -1,6 +1,5 @@
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 from sqlalchemy import ForeignKey, Text, text
-import uuid
 
 from .repository import Base, uuid_pk, str_uniq, str_null_true, uuid_not_pk
 

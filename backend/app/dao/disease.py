@@ -15,6 +15,9 @@ class DiseaseDAO(BaseDAO):
         reason: str,
         recommendation: str,
     ) -> Disease:
+        """
+        Создать запись о болезни
+        """
         async with async_session_maker() as session:
             record = Disease(
                 id=uuid.uuid4(),

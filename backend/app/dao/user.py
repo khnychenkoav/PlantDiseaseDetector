@@ -15,6 +15,10 @@ class UserDAO(BaseDAO):
 
     @classmethod
     async def create_user(cls, name: str, email: str, password: str) -> User:
+        """
+        Регистрация пользователя
+        """
+
         async with async_session_maker() as session:
             hashed_password = get_password_hash(password)
             user = User(
@@ -27,6 +31,10 @@ class UserDAO(BaseDAO):
 
     @classmethod
     async def update_user(cls, update_data: Dict[str, Any]) -> User:
+        """
+        Обновить данные пользователя
+        """
+
         async with async_session_maker() as session:
             result = await session.execute(
                 select(User).where(User.email == update_data["email"])
