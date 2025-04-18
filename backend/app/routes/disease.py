@@ -9,7 +9,7 @@ from app.services.jwt import get_current_user
 from app.repository.models import User
 from app.dao.disease import DiseaseDAO
 from app.dao.history import HistoryDAO
-from app.schemas.disease import DiseasesInCreate
+from app.schemas.disease import DiseasesInCreate, DiseasesInResponse
 from app.depends.user import get_current_admin_user
 
 
@@ -18,7 +18,11 @@ router = APIRouter()
 UPLOAD_DIR = "uploads"
 
 
-@router.post("/upload/", summary="Загрузить фотографию растения")
+@router.post(
+    "/upload/",
+    summary="Загрузить фотографию растения",
+    response_model=DiseasesInResponse,
+)
 async def upload_file(
     file: UploadFile = File(...),
     user: User = Depends(get_current_user),
@@ -33,13 +37,17 @@ async def upload_file(
 
     disease_name = predict(file_path, model_resnet)
     diseases = await DiseaseDAO.find_one_or_none(name=disease_name["ru"])
+    if diseases is None:
+        diseases = await DiseaseDAO.find_one_or_none(name="НеизвестнаяБолезнь")
     await HistoryDAO.create_record(user.id, diseases.id, file_path)
 
-    return {
-        "filename": file.filename,
-        "path": file_path,
-        "name_disease": disease_name["ru"],
-    }
+    return DiseasesInResponse(
+        diseases_name=diseases.name,
+        reason=diseases.reason,
+        recommendation=diseases.recommendations,
+        time=diseases.created_at,
+        image_url=file_path,
+    )
 
 
 @router.post("/create/", summary="Создать запись растения")
