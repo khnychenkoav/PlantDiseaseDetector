@@ -1,0 +1,154 @@
+[
+    {
+        "eng": "Apple___Apple_scab",
+        "ru": "Яблоня___Парша яблони"
+    },
+    {
+        "eng": "Apple___Black_rot",
+        "ru": "Яблоня___Черная гниль"
+    },
+    {
+        "eng": "Apple___Cedar_apple_rust",
+        "ru": "Яблоня___Ржавчина кедрово-яблоневая"
+    },
+    {
+        "eng": "Apple___healthy",
+        "ru": "Яблоня___Здоровое растение"
+    },
+    {
+        "eng": "Blueberry___healthy",
+        "ru": "Черника___Здоровое растение"
+    },
+    {
+        "eng": "Cherry_(including_sour)___Powdery_mildew",
+        "ru": "Вишня_(включая_кислую)___Мучнистая роса"
+    },
+    {
+        "eng": "Cherry_(including_sour)___healthy",
+        "ru": "Вишня_(включая_кислую)___Здоровое растение"
+    },
+    {
+        "eng": "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot",
+        "ru": "Кукуруза___Церкоспороз листьев/Серая пятнистость листьев"
+    },
+    {
+        "eng": "Corn_(maize)___Common_rust_",
+        "ru": "Кукуруза___Обыкновенная ржавчина"
+    },
+    {
+        "eng": "Corn_(maize)___Northern_Leaf_Blight",
+        "ru": "Кукуруза___Северный гельминтоспориоз"
+    },
+    {
+        "eng": "Corn_(maize)___healthy",
+        "ru": "Кукуруза___Здоровое растение"
+    },
+    {
+        "eng": "Grape___Black_rot",
+        "ru": "Виноград___Черная гниль"
+    },
+    {
+        "eng": "Grape___Esca_(Black_Measles)",
+        "ru": "Виноград___Эска (Черная корь)"
+    },
+    {
+        "eng": "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+        "ru": "Виноград___Фомопсис (Пятнистость листьев)"
+    },
+    {
+        "eng": "Grape___healthy",
+        "ru": "Виноград___Здоровое растение"
+    },
+    {
+        "eng": "Orange___Haunglongbing_(Citrus_greening)",
+        "ru": "Апельсин___Хуанлунбин (Позеленение цитрусовых)"
+    },
+    {
+        "eng": "Peach___Bacterial_spot",
+        "ru": "Персик___Бактериальная пятнистость"
+    },
+    {
+        "eng": "Peach___healthy",
+        "ru": "Персик___Здоровое растение"
+    },
+    {
+        "eng": "Pepper,_bell___Bacterial_spot",
+        "ru": "Перец_болгарский___Бактериальная пятнистость"
+    },
+    {
+        "eng": "Pepper,_bell___healthy",
+        "ru": "Перец_болгарский___Здоровое растение"
+    },
+    {
+        "eng": "Potato___Early_blight",
+        "ru": "Картофель___Ранняя сухая пятнистость"
+    },
+    {
+        "eng": "Potato___Late_blight",
+        "ru": "Картофель___Фитофтороз"
+    },
+    {
+        "eng": "Potato___healthy",
+        "ru": "Картофель___Здоровое растение"
+    },
+    {
+        "eng": "Raspberry___healthy",
+        "ru": "Малина___Здоровое растение"
+    },
+    {
+        "eng": "Soybean___healthy",
+        "ru": "Соя___Здоровое растение"
+    },
+    {
+        "eng": "Squash___Powdery_mildew",
+        "ru": "Тыква___Мучнистая роса"
+    },
+    {
+        "eng": "Strawberry___Leaf_scorch",
+        "ru": "Клубника___Ожог листьев"
+    },
+    {
+        "eng": "Strawberry___healthy",
+        "ru": "Клубника___Здоровое растение"
+    },
+    {
+        "eng": "Tomato___Bacterial_spot",
+        "ru": "Томат___Бактериальная пятнистость"
+    },
+    {
+        "eng": "Tomato___Early_blight",
+        "ru": "Томат___Ранняя сухая пятнистость"
+    },
+    {
+        "eng": "Tomato___Late_blight",
+        "ru": "Томат___Фитофтороз"
+    },
+    {
+        "eng": "Tomato___Leaf_Mold",
+        "ru": "Томат___Кладоспориоз (Бурая пятнистость)"
+    },
+    {
+        "eng": "Tomato___Septoria_leaf_spot",
+        "ru": "Томат___Септориоз (Белая пятнистость)"
+    },
+    {
+        "eng": "Tomato___Spider_mites Two-spotted_spider_mite",
+        "ru": "Томат___Паутинный клещ (Двупятнистый)"
+    },
+    {
+        "eng": "Tomato___Target_Spot",
+        "ru": "Томат___Альтернариоз (Коричневая пятнистость)"
+    },
+    {
+        "eng": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+        "ru": "Томат___Вирус желтой курчавости листьев"
+    },
+    {
+        "eng": "Tomato___Tomato_mosaic_virus",
+        "ru": "Томат___Вирус табачной мозаики томатов"
+    },
+    {
+        "eng": "Tomato___healthy",
+        "ru": "Томат___Здоровое растение"
+    }
+]

@@ -14,6 +14,9 @@ class HistoryDAO(BaseDAO):
     async def create_record(
         cls, user_uuid: str, disease_uuid: str, image_path: str
     ) -> History:
+        """
+        Создать запись запроса пользователя
+        """
         async with async_session_maker() as session:
             record = History(
                 id=uuid.uuid4(),
@@ -28,6 +31,9 @@ class HistoryDAO(BaseDAO):
 
     @classmethod
     async def get_history(cls, user_id: uuid.UUID):
+        """
+        Получить историю запросов пользователя
+        """
         async with async_session_maker() as session:
             query = (
                 select(History)
