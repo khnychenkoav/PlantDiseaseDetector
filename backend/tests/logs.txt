@@ -3,200 +3,13 @@ platform linux -- Python 3.10.12, pytest-8.3.5, pluggy-1.5.0
 rootdir: /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend
 plugins: asyncio-0.26.0, anyio-4.7.0
 asyncio: mode=strict, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
-collected 16 items
+collected 25 items
 
-tests/test_auth.py F.F.E                                                 [ 31%]
-tests/test_disease.py .E.EEE                                             [ 68%]
-tests/test_history.py .E                                                 [ 81%]
-tests/test_user.py .EE                                                   [100%]
+tests/test_auth.py ......                                                [ 24%]
+tests/test_disease.py ......s                                            [ 52%]
+tests/test_history.py ..                                                 [ 60%]
+tests/test_user.py ..........                                            [100%]
 
-==================================== ERRORS ====================================
-________________________ ERROR at setup of test_logout _________________________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_auth.py, line 66
-  @pytest.mark.asyncio
-  async def test_logout(authenticated_client):
-      """Тест выхода из системы."""
-      response = await authenticated_client.post("/users/logout/")
-      assert response.status_code == 200
-
-      # Проверяем, что после выхода защищенный endpoint недоступен
-      me_response = await authenticated_client.get("/users/me/")
-      assert me_response.status_code == 401
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_auth.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_auth.py:66
-_____________ ERROR at setup of test_create_disease_authenticated ______________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py, line 16
-  @pytest.mark.asyncio
-  @patch("app.dao.disease.DiseaseDAO.create_record")
-  async def test_create_disease_authenticated(mock_create, authenticated_client):
-      """Тест создания болезни с авторизацией."""
-      mock_create.return_value = {
-          "id": "1",
-          "name": "Fusarium",
-          "reason": "Fungi",
-          "recommendation": "Use fungicide"
-      }
-
-      response = await authenticated_client.post("/diseases/create/", json={
-          "name": "Fusarium",
-          "reason": "Fungi",
-          "recommendation": "Use fungicide"
-      })
-      assert response.status_code == 200
-      data = response.json()
-      assert data["name"] == "Fusarium"
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_disease.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py:16
-______________ ERROR at setup of test_upload_invalid_file_format _______________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py, line 44
-  @pytest.mark.asyncio
-  async def test_upload_invalid_file_format(authenticated_client):
-      """Тест загрузки файла с неподдерживаемым форматом."""
-      test_file = io.BytesIO(b"test file content")
-      file_data = {"file": ("test_doc.txt", test_file, "text/plain")}
-      response = await authenticated_client.post("/diseases/upload/", files=file_data)
-      # Ожидаем код 415 (Unsupported Media Type) или 422 (Unprocessable Entity)
-      assert response.status_code == 415
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_disease.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py:44
-______________ ERROR at setup of test_get_disease_by_id_not_found ______________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py, line 53
-  @pytest.mark.asyncio
-  @patch("app.routes.disease.DiseaseDAO.find_one_or_none")
-  async def test_get_disease_by_id_not_found(mock_find, authenticated_client):
-      """Тест получения несуществующей болезни по ID."""
-      mock_find.return_value = None
-      response = await authenticated_client.get("/diseases/999")
-      assert response.status_code == 404
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_disease.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py:53
-_______________ ERROR at setup of test_get_disease_by_id_success _______________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py, line 61
-  @pytest.mark.asyncio
-  @patch("app.routes.disease.DiseaseDAO.find_one_or_none")
-  async def test_get_disease_by_id_success(mock_find, authenticated_client):
-      """Тест успешного получения болезни по ID."""
-      mock_find.return_value = {
-          "id": "1",
-          "name": "TestDisease",
-          "reason": "Test reason",
-          "recommendations": "Test recommendations"
-      }
-      response = await authenticated_client.get("/diseases/1")
-      assert response.status_code == 200
-      data = response.json()
-      assert data["name"] == "TestDisease"
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_disease.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_disease.py:61
-_______________ ERROR at setup of test_get_history_authenticated _______________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_history.py, line 10
-  @pytest.mark.asyncio
-  @patch("app.routes.history.HistoryDAO.find_all")
-  async def test_get_history_authenticated(mock_find_all, authenticated_client):
-      """Тест получения истории с авторизацией."""
-      mock_history = [
-          {"id": "1", "disease_id": "101", "user_id": "201", "created_at": "2023-01-01T12:00:00"},
-          {"id": "2", "disease_id": "102", "user_id": "201", "created_at": "2023-01-02T12:00:00"}
-      ]
-      mock_find_all.return_value = mock_history
-
-      response = await authenticated_client.get("/history/all/")
-      assert response.status_code == 200
-      assert response.json() == mock_history
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_history.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_history.py:10
-_________________ ERROR at setup of test_get_me_authenticated __________________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_user.py, line 10
-  @pytest.mark.asyncio
-  async def test_get_me_authenticated(authenticated_client):
-      """Тест получения информации о текущем пользователе с авторизацией."""
-      response = await authenticated_client.get("/users/me/")
-      assert response.status_code == 200
-      data = response.json()
-      assert "id" in data
-      assert "email" in data
-      assert data["email"] == "test@example.com"
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_user.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_user.py:10
-______________ ERROR at setup of test_access_denied_for_non_admin ______________
-file /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_user.py, line 20
-  @pytest.mark.asyncio
-  @patch("app.routes.user.get_current_admin_user")
-  async def test_access_denied_for_non_admin(mock_admin, authenticated_client):
-      """Тест отказа доступа для не-админа."""
-      mock_admin.side_effect = Exception("Not authorized")
-      response = await authenticated_client.get("/users/all/")
-      assert response.status_code == 403
-E       fixture 'authenticated_client' not found
->       available fixtures: _session_event_loop, anyio_backend, anyio_backend_name, anyio_backend_options, cache, capfd, capfdbinary, caplog, capsys, capsysbinary, client, doctest_namespace, event_loop, event_loop_policy, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, tests/test_user.py::<event_loop>, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory, unused_tcp_port, unused_tcp_port_factory, unused_udp_port, unused_udp_port_factory
->       use 'pytest --fixtures [testpath]' for help on them.
-
-/home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/test_user.py:20
-=================================== FAILURES ===================================
-______________________________ test_register_user ______________________________
-
-client = <httpx.AsyncClient object at 0x7f012ddc2bf0>
-
-    @pytest.mark.asyncio
-    async def test_register_user(client):
-        """Тест регистрации нового пользователя."""
-        response = await client.post("/auth/register/", json={
-            "name": "NewUser",
-            "email": "new@example.com",
-            "password": "qwerty123"
-        })
->       assert response.status_code == 200
-E       assert 409 == 200
-E        +  where 409 = <Response [409 Conflict]>.status_code
-
-tests/test_auth.py:11: AssertionError
-______________________________ test_login_success ______________________________
-
-client = <httpx.AsyncClient object at 0x7f012dd80fd0>
-
-    @pytest.mark.asyncio
-    async def test_login_success(client):
-        """Тест успешного входа."""
-        # Регистрация пользователя для входа
-        await client.post("/auth/register/", json={
-            "name": "LoginUser",
-            "email": "login@example.com",
-            "password": "qwerty123"
-        })
-    
-        # Вход с корректными данными
-        response = await client.post("/auth/login/", json={
-            "email": "login@example.com",
-            "password": "qwerty123"
-        })
-        assert response.status_code == 200
-        data = response.json()
-        assert "access_token" in data
->       assert "token_type" in data
-E       AssertionError: assert 'token_type' in {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyNDRkNTVmOS0zOGI5LTQ0MzItODY3Yy04ZjQyNjM4OTJhMDYiLCJleHAiOjE3NDc3NzUyODB9.qlqDEk-pRB_rrTk5_cb13TnkUkGQSvz-EjPvBIJbvCw', 'refresh_token': None}
-
-tests/test_auth.py:54: AssertionError
 =============================== warnings summary ===============================
 ../venv/lib/python3.10/site-packages/torchvision/models/_utils.py:208
   /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/venv/lib/python3.10/site-packages/torchvision/models/_utils.py:208: UserWarning: The parameter 'pretrained' is deprecated since 0.13 and may be removed in the future, please use 'weights' instead.
@@ -206,9 +19,9 @@ tests/test_auth.py:54: AssertionError
   /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/venv/lib/python3.10/site-packages/torchvision/models/_utils.py:223: UserWarning: Arguments other than a weight enum or `None` for 'weights' are deprecated since 0.13 and may be removed in the future. The current behavior is equivalent to passing `weights=None`.
     warnings.warn(msg)
 
-tests/test_auth.py::test_register_user
+tests/test_auth.py::test_register_user_success
   /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/venv/lib/python3.10/site-packages/pytest_asyncio/plugin.py:884: DeprecationWarning: The event_loop fixture provided by pytest-asyncio has been redefined in
-  /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/conftest.py:13
+  /home/tyhyqo/Education/MAI/Python/PlantDiseaseDetector/backend/tests/conftest.py:70
   Replacing the event_loop fixture with a custom implementation is deprecated
   and will lead to errors in the future.
   If you want to request an asyncio event loop with a scope other than function
@@ -219,15 +32,4 @@ tests/test_auth.py::test_register_user
     warnings.warn(
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-=========================== short test summary info ============================
-FAILED tests/test_auth.py::test_register_user - assert 409 == 200
-FAILED tests/test_auth.py::test_login_success - AssertionError: assert 'token...
-ERROR tests/test_auth.py::test_logout
-ERROR tests/test_disease.py::test_create_disease_authenticated
-ERROR tests/test_disease.py::test_upload_invalid_file_format
-ERROR tests/test_disease.py::test_get_disease_by_id_not_found
-ERROR tests/test_disease.py::test_get_disease_by_id_success
-ERROR tests/test_history.py::test_get_history_authenticated
-ERROR tests/test_user.py::test_get_me_authenticated
-ERROR tests/test_user.py::test_access_denied_for_non_admin
-============== 2 failed, 6 passed, 3 warnings, 8 errors in 0.69s ===============
+================== 24 passed, 1 skipped, 3 warnings in 36.82s ==================
