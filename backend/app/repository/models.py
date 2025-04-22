@@ -61,7 +61,7 @@ class History(Base):
         nullable=False,
         primary_key=False,
     )
-    image_path: Mapped[str_uniq] = mapped_column(nullable=False)
+    image_path: Mapped[str] = mapped_column(nullable=False)
 
     user: Mapped["User"] = relationship("User", back_populates="historys")
     disease: Mapped["Disease"] = relationship("Disease", back_populates="historys")

@@ -3,7 +3,6 @@ import shutil
 
 from fastapi import APIRouter, UploadFile, File, Depends
 
-from ml_model.predict import predict, model_resnet
 from app.services.security import get_hashed_path
 from app.services.jwt import get_current_user
 from app.repository.models import User
@@ -11,6 +10,7 @@ from app.dao.disease import DiseaseDAO
 from app.dao.history import HistoryDAO
 from app.schemas.disease import DiseasesInCreate, DiseasesInResponse
 from app.depends.user import get_current_admin_user
+from app.services.model_service import model_service
 
 
 router = APIRouter()
@@ -35,7 +35,7 @@ async def upload_file(
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    disease_name = predict(file_path, model_resnet)
+    disease_name = model_service.predict(file_path)
     diseases = await DiseaseDAO.find_one_or_none(name=disease_name["ru"])
     if diseases is None:
         diseases = await DiseaseDAO.find_one_or_none(name="НеизвестнаяБолезнь")
