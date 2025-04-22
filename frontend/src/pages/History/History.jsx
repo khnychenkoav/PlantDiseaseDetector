@@ -8,7 +8,13 @@ export default function History() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const response = await axiosInstance.get("/history/all");
+        console.log("axiosInstance:", axiosInstance);
+        const response = await axiosInstance.get("/history/all", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        
         setHistoryData(response.data);
       } catch (error) {
         console.error("Error fetching history data:", error);

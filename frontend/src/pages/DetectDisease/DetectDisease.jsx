@@ -18,17 +18,18 @@ export default function DetectDisease() {
     }),
     handleSubmit = async (values) => {
       const formData = new FormData();
-      formData.append("image", values.image);
+      formData.append("file", values.image);
 
       try {
-        const response = await axios.post("/api/analyze", formData, {
+        const response = await axios.post("http://localhost:8080/diseases/upload/", formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
         setResult(response.data);
         toast.success("Image analyzed successfully!");
       } catch (error) {
+        console.error("Error data:", error.response.data);
         toast.error("Failed to analyze image");
       }
     };

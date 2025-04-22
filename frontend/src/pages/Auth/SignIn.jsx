@@ -19,15 +19,16 @@ export default function SignIn() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        'http://localhost:8081/auth/login',
+        'http://localhost:8080/auth/login',
         {
           email: values.email,
           password: values.password
         }
       );
-      
+      const token = response.data.access_token;
       console.log("Response:", response.data);
-      localStorage.setItem("accessToken", response.data.access_token);
+      localStorage.setItem("accessToken", token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       toast.success("Signed in successfully!");
     } catch (error) {
       console.error("Error:", error.response ? error.response.data : error.message);

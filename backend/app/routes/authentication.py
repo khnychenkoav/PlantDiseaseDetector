@@ -24,6 +24,8 @@ async def login(response: Response, user_data: UserInLogin):
         key="users_access_token",
         value=access_token,
         httponly=True,
+        samesite="Lax",
+        secure=False
     )
     return {"access_token": access_token, "refresh_token": None}
 

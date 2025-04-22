@@ -1,12 +1,14 @@
 from jose import jwt, JWTError
 from datetime import datetime, timezone
 from fastapi import HTTPException, status, Depends, Request
+from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 
 from app.config import get_auth_data
 from app.dao.user import UserDAO
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login/")
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
@@ -19,8 +21,7 @@ def create_access_token(data: dict) -> str:
     return encode_jwt
 
 
-def get_token(request: Request):
-    token = request.cookies.get("users_access_token")
+def get_token(token: str = Depends(oauth2_scheme)):
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Token not found"

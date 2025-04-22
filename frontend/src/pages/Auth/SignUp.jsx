@@ -31,7 +31,7 @@ export default function SignUp() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        'http://localhost:8081/auth/register',
+        'http://localhost:8080/auth/register',
         {
           email: values.email,
           password: values.password,
