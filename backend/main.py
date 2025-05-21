@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,14 +8,14 @@ from contextlib import asynccontextmanager
 
 from app.routes.api import router as api_router
 from app.services.model_service import model_service
+from app.services.clean_up import periodic_cleanup
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Загружаем модель при старте приложения
     model_service.load_model()
+    asyncio.create_task(periodic_cleanup())
     yield
-    # Здесь можно добавить cleanup при завершении (если нужно)
     pass
 
 
