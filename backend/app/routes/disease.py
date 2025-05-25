@@ -1,7 +1,8 @@
 import os
 import shutil
+import json
 
-from fastapi import APIRouter, UploadFile, File, Depends
+from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
 
 from app.services.security import get_hashed_path
 from app.services.jwt import get_current_user
@@ -60,3 +61,42 @@ async def create(
         disease.reason,
         disease.recommendation,
     )
+
+
+@router.post("/create/init", summary="Инициализировать базу болезнями растений")
+async def init_diseases(admin: User = Depends(get_current_admin_user)):
+    try:
+        with open("ml_model/class_disease.json", "r", encoding="utf-8") as f:
+            diseases = json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ошибка чтения файла: {e}")
+
+    created = 0
+    duplicates = 0
+
+    for disease in diseases:
+        if "healthy" in disease["eng"]:
+            continue
+
+        name = disease["ru"]
+        reason = disease.get("cause", "")
+        recommendation = disease.get("treatment", "")
+
+        # Проверка на существующую запись
+        existing = await DiseaseDAO.find_one_or_none(name=disease["ru"])
+        if existing:
+            duplicates += 1
+            continue
+
+        try:
+            await DiseaseDAO.create_record(name, reason, recommendation)
+            created += 1
+        except Exception:
+            continue
+
+    return {
+        "status": "ok",
+        "created": created,
+        "duplicates": duplicates,
+        "total_processed": len(diseases),
+    }
