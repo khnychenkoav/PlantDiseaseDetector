@@ -9,7 +9,7 @@ from app.services.jwt import get_current_user
 from app.repository.models import User
 from app.dao.disease import DiseaseDAO
 from app.dao.history import HistoryDAO
-from app.schemas.disease import DiseasesInCreate, DiseasesInResponse
+from app.schemas.disease import DiseasesInCreate, DiseasesInResponse, DiseaseOut
 from app.depends.user import get_current_admin_user
 from app.services.model_service import model_service
 
@@ -63,7 +63,7 @@ async def create(
     )
 
 
-@router.post("/create/init", summary="Инициализировать базу болезнями растений")
+@router.post("/create/init/", summary="Инициализировать базу болезнями растений")
 async def init_diseases(admin: User = Depends(get_current_admin_user)):
     try:
         with open("ml_model/class_disease.json", "r", encoding="utf-8") as f:
@@ -95,3 +95,22 @@ async def init_diseases(admin: User = Depends(get_current_admin_user)):
         "duplicates": duplicates,
         "total_processed": len(diseases),
     }
+
+
+@router.get(
+    "/all/",
+    response_model=list[DiseaseOut],
+    summary="Получить список всех болезней растений",
+)
+async def get_all_diseases(admin: User = Depends(get_current_admin_user)):
+    diseases = await DiseaseDAO.find_all()
+    response_data = []
+    for record in diseases:
+        response_data.append(
+            DiseaseOut(
+                name=record.name,
+                reason=record.reason,
+                recommendation=record.recommendations,
+            )
+        )
+    return response_data

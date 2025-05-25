@@ -16,3 +16,9 @@ class DiseasesInResponse(BaseModel):
     reason: str
     recommendation: str
     image_url: str
+
+
+class DiseaseOut(BaseModel):
+    name: str
+    reason: str
+    recommendation: str
