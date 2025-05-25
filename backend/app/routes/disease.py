@@ -75,14 +75,9 @@ async def init_diseases(admin: User = Depends(get_current_admin_user)):
     duplicates = 0
 
     for disease in diseases:
-        if "healthy" in disease["eng"]:
-            continue
-
         name = disease["ru"]
         reason = disease.get("cause", "")
         recommendation = disease.get("treatment", "")
-
-        # Проверка на существующую запись
         existing = await DiseaseDAO.find_one_or_none(name=disease["ru"])
         if existing:
             duplicates += 1
