@@ -21,12 +21,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "http://plantdetector.ru"
+        "http://plantdetector.ru",
+        "http://www.plantdetector.ru",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -39,5 +39,4 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.get("/")
 def read_root():
-
     return HTMLResponse(content="Plant Disease Detector API")
