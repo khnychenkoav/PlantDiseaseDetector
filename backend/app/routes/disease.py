@@ -13,7 +13,6 @@ from app.schemas.disease import DiseasesInCreate, DiseasesInResponse, DiseaseOut
 from app.depends.user import get_current_admin_user
 from app.services.model_service import model_service
 
-
 router = APIRouter()
 
 UPLOAD_DIR = "uploads"
@@ -25,8 +24,8 @@ UPLOAD_DIR = "uploads"
     response_model=DiseasesInResponse,
 )
 async def upload_file(
-    file: UploadFile = File(...),
-    user: User = Depends(get_current_user),
+        file: UploadFile = File(...),
+        user: User = Depends(get_current_user),
 ):
     subfolder = get_hashed_path(file.filename)
     save_dir = os.path.join(UPLOAD_DIR, subfolder)
@@ -53,8 +52,8 @@ async def upload_file(
 
 @router.post("/create/", summary="Создать запись растения")
 async def create(
-    disease: DiseasesInCreate,
-    admin: User = Depends(get_current_admin_user),
+        disease: DiseasesInCreate,
+        admin: User = Depends(get_current_admin_user),
 ):
     await DiseaseDAO.create_record(
         disease.name,
@@ -102,7 +101,7 @@ async def init_diseases(admin: User = Depends(get_current_admin_user)):
     response_model=list[DiseaseOut],
     summary="Получить список всех болезней растений",
 )
-async def get_all_diseases(admin: User = Depends(get_current_admin_user)):
+async def get_all_diseases(user: User = Depends(get_current_user)):
     diseases = await DiseaseDAO.find_all()
     response_data = []
     for record in diseases:
