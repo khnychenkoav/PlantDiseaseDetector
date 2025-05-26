@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../services/axiosInstance";
 import "./DiseasesList.scss";
 
 export default function DiseasesList() {
@@ -8,7 +8,7 @@ export default function DiseasesList() {
   useEffect(() => {
     const fetchDiseases = async () => {
       try {
-        const response = await axios.get("/api/diseases");
+        const response = await axios.get("http://api.plantdetector.ru/diseases/all/");
         setDiseases(response.data);
       } catch (error) {
         console.error("Error fetching diseases:", error);

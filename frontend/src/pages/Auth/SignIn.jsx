@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import React from "react";
-import axios from "axios";
+import axios from "../../services/axiosInstance";
 import FormInput from "../../components/FormInput/FormInput";
 import { toast } from "react-toastify";
 
@@ -19,12 +19,14 @@ export default function SignIn() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        'http://localhost:8080/auth/login',
+        '/auth/login',
         {
           email: values.email,
           password: values.password
         }
       );
+      localStorage.setItem("loggedIn", "true");
+
       const token = response.data.access_token;
       console.log("Response:", response.data);
       localStorage.setItem("accessToken", token);

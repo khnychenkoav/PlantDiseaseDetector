@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import React from "react";
-import axios from "axios";
+import axios from "../../services/axiosInstance";
 import FormInput from "../../components/FormInput/FormInput";
 import { toast } from "react-toastify";
 
@@ -31,7 +31,7 @@ export default function SignUp() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        'http://localhost:8080/auth/register',
+        '/auth/register',
         {
           email: values.email,
           password: values.password,

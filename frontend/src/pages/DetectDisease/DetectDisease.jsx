@@ -5,7 +5,7 @@ import React, { useState } from "react";
 
 import FormFileInput from "../../components/FormFileInput/FormFileInput";
 import { toast } from "react-toastify";
-import axios from "axios";
+import axios from "../../services/axiosInstance";
 
 export default function DetectDisease() {
   const [result, setResult] = useState(null);
@@ -21,7 +21,7 @@ export default function DetectDisease() {
       formData.append("file", values.image);
 
       try {
-        const response = await axios.post("http://localhost:8080/diseases/upload/", formData, {
+        const response = await axios.post("/diseases/upload/", formData, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
@@ -54,9 +54,16 @@ export default function DetectDisease() {
           {result && (
             <div className='mt-4'>
               <h3>Result</h3>
-              <p><strong>Disease:</strong> {result.disease}</p>
-              <p><strong>Treatment:</strong> {result.treatment}</p>
-              <p><strong>Prevention:</strong> {result.prevention}</p>
+              <p><strong>Disease:</strong> {result.diseases_name}</p>
+              <p><strong>Reason:</strong> {result.reason}</p>
+              <p><strong>Recommendation:</strong> {result.recommendation}</p>
+              {result.image_url && (
+                <img
+                  src={`http://api.plantdetector.ru/${result.image_url}`}
+                  alt='Uploaded'
+                  className='img-fluid mt-3'
+                />
+              )}
             </div>
           )}
         </div>
