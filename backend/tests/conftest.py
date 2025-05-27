@@ -179,8 +179,13 @@ async def authenticated_client(client: AsyncClient, test_user: UserModel) -> Asy
     """
     login_data = {"email": test_user.email, "password": "password"}
     response = await client.post("/auth/login/", json=login_data)
+
+    # Печать для отладки
+    print(f"Login response for {test_user.email}: {response.status_code}, {response.text}")
+
     assert response.status_code == 200, f"Login failed for {test_user.email}: {response.text}"
     token = response.json().get("access_token")
+    assert token, "Access token not found in login response"
     client.headers.update({"Authorization": f"Bearer {token}"})
     return client
 
@@ -192,6 +197,10 @@ async def authenticated_admin_client(client: AsyncClient, test_admin_user: UserM
     """
     login_data = {"email": test_admin_user.email, "password": "password"}
     response = await client.post("/auth/login/", json=login_data)
+
+    # Печать для отладки
+    print(f"Admin login response for {test_admin_user.email}: {response.status_code}, {response.text}")
+
     assert response.status_code == 200, f"Admin login failed for {test_admin_user.email}: {response.text}"
     token = response.json().get("access_token")
     client.headers.update({"Authorization": f"Bearer {token}"})

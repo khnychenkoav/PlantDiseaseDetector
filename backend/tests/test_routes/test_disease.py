@@ -2,6 +2,7 @@ import pytest
 import io
 import os
 import uuid
+import json
 from httpx import AsyncClient
 from unittest.mock import patch, AsyncMock, mock_open, MagicMock
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -59,7 +60,7 @@ async def test_upload_file_unauthorized(client: AsyncClient):
 # --- Тесты загрузки файла авторизованным пользователем ---
 
 @pytest.mark.asyncio
-@patch("app.routes.disease.predict", new_callable=MagicMock)
+@patch("app.routes.disease.model_service.predict", new_callable=MagicMock)
 @patch("app.routes.disease.os.makedirs")
 @patch("app.routes.disease.open", new_callable=mock_open)
 @patch("app.routes.disease.get_hashed_path")
@@ -115,7 +116,7 @@ async def test_upload_file_authorized_success(
 
 
 @pytest.mark.asyncio
-@patch("app.routes.disease.predict", new_callable=MagicMock)
+@patch("app.routes.disease.model_service.predict", new_callable=MagicMock)
 @patch("app.routes.disease.os.makedirs")
 @patch("app.routes.disease.open", new_callable=mock_open)
 @patch("app.routes.disease.get_hashed_path")
@@ -182,20 +183,167 @@ async def test_upload_file_disease_not_found_fallback(
         expected_save_path
     )
 
+# --- Тесты для эндпоинта /diseases/create/init/ ---
 
 @pytest.mark.asyncio
-@pytest.mark.skip(reason="Тест не работает из-за отсутствия обработки ошибок в приложении")
-async def test_upload_invalid_file_format(authenticated_client: AsyncClient):
+@patch("app.routes.disease.open", new_callable=mock_open)
+async def test_init_diseases_file_not_found(
+    mock_file_open: MagicMock,
+    authenticated_admin_client: AsyncClient
+):
     """
-    Тестирует загрузку файла, который не является изображением (например, текст).
-    Ожидает статус 500, так как текущая реализация приложения не обрабатывает
-    ошибку PIL.UnidentifiedImageError и FastAPI возвращает Internal Server Error.
-    Этот тест указывает на необходимость улучшения обработки ошибок в приложении.
+    Тестирует эндпоинт /diseases/create/init/, когда файл class_disease.json не найден.
     """
-    test_file = io.BytesIO(b"this is text")
-    files = {"file": ("test_doc.txt", test_file, "text/plain")}
-    response = await authenticated_client.post("/diseases/upload/", files=files)
+    mock_file_open.side_effect = FileNotFoundError("File not found for testing")
+    response = await authenticated_admin_client.post("/diseases/create/init/")
     assert response.status_code == 500
-    # TODO: В приложении добавить обработчик исключений для PIL.UnidentifiedImageError,
-    # чтобы возвращать 400 или 422 с понятным сообщением. После этого изменить
-    # ожидаемый статус-код в этом тесте.
+    assert "Ошибка чтения файла" in response.json()["detail"]
+    assert "File not found for testing" in response.json()["detail"]
+
+
+@pytest.mark.asyncio
+@patch("app.routes.disease.open", new_callable=mock_open)
+@patch("app.dao.disease.DiseaseDAO.find_one_or_none", new_callable=AsyncMock)
+@patch("app.dao.disease.DiseaseDAO.create_record", new_callable=AsyncMock)
+async def test_init_diseases_success_with_duplicates_and_new(
+    mock_dao_create: AsyncMock,
+    mock_dao_find: AsyncMock,
+    mock_file_open: MagicMock,
+    authenticated_admin_client: AsyncClient,
+    test_disease: DiseaseModel # Фикстура для имитации существующей болезни
+):
+    """
+    Тестирует /diseases/create/init/ с успешным созданием новых
+    и обнаружением существующих болезней.
+    """
+    diseases_data = [
+        {"ru": "Новая Болезнь 1", "cause": "Причина 1", "treatment": "Лечение 1"},
+        {"ru": test_disease.name, "cause": "Уже есть", "treatment": "Обновить?"}, # Существующая
+        {"ru": "Новая Болезнь 2", "cause": "Причина 2", "treatment": "Лечение 2"},
+    ]
+    mock_file_open.return_value.read.return_value = json.dumps(diseases_data) # Импортируйте json
+
+    # Настройка mock_dao_find:
+    # 1. Новая Болезнь 1 -> None (не найдена)
+    # 2. test_disease.name -> test_disease (найдена)
+    # 3. Новая Болезнь 2 -> None (не найдена)
+    def find_side_effect(name):
+        if name == test_disease.name:
+            return test_disease
+        return None
+    mock_dao_find.side_effect = find_side_effect
+    mock_dao_create.return_value = None # Успешное создание
+
+    response = await authenticated_admin_client.post("/diseases/create/init/")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    assert data["created"] == 2 # "Новая Болезнь 1" и "Новая Болезнь 2"
+    assert data["duplicates"] == 1 # test_disease.name
+    assert data["total_processed"] == 3
+
+    assert mock_dao_find.call_count == 3
+    assert mock_dao_create.call_count == 2
+    mock_dao_create.assert_any_call("Новая Болезнь 1", "Причина 1", "Лечение 1")
+    mock_dao_create.assert_any_call("Новая Болезнь 2", "Причина 2", "Лечение 2")
+
+
+@pytest.mark.asyncio
+@patch("app.routes.disease.open", new_callable=mock_open)
+@patch("app.dao.disease.DiseaseDAO.find_one_or_none", new_callable=AsyncMock)
+@patch("app.dao.disease.DiseaseDAO.create_record", new_callable=AsyncMock)
+async def test_init_diseases_creation_error_continues(
+    mock_dao_create: AsyncMock,
+    mock_dao_find: AsyncMock,
+    mock_file_open: MagicMock,
+    authenticated_admin_client: AsyncClient
+):
+    """
+    Тестирует /diseases/create/init/, когда DiseaseDAO.create_record вызывает ошибку
+    для одной из записей, но процесс продолжается для других.
+    """
+    diseases_data = [
+        {"ru": "Болезнь А", "cause": "Причина А", "treatment": "Лечение А"},
+        {"ru": "Болезнь Б (ошибка)", "cause": "Причина Б", "treatment": "Лечение Б"},
+        {"ru": "Болезнь В", "cause": "Причина В", "treatment": "Лечение В"},
+    ]
+    mock_file_open.return_value.read.return_value = json.dumps(diseases_data)
+    mock_dao_find.return_value = None # Все болезни считаются новыми
+
+    # Настройка mock_dao_create:
+    # 1. Болезнь А -> успешно
+    # 2. Болезнь Б (ошибка) -> вызывает Exception
+    # 3. Болезнь В -> успешно
+    def create_side_effect(name, reason, recommendation):
+        if name == "Болезнь Б (ошибка)":
+            raise Exception("DB error on create")
+        return None # Успешное создание для других
+    mock_dao_create.side_effect = create_side_effect
+
+    response = await authenticated_admin_client.post("/diseases/create/init/")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["status"] == "ok"
+    assert data["created"] == 2 # "Болезнь А" и "Болезнь В"
+    assert data["duplicates"] == 0
+    assert data["total_processed"] == 3
+
+    assert mock_dao_create.call_count == 3 # Было 3 попытки создания
+
+
+# --- Тесты для эндпоинта /diseases/all/ ---
+
+@pytest.mark.asyncio
+@patch("app.dao.disease.DiseaseDAO.find_all", new_callable=AsyncMock)
+async def test_get_all_diseases_empty_db(
+    mock_find_all: AsyncMock,
+    authenticated_client: AsyncClient # Можно использовать обычного пользователя, если доступ разрешен
+):
+    """
+    Тестирует эндпоинт /diseases/all/, когда в базе данных нет болезней.
+    """
+    mock_find_all.return_value = [] # DAO возвращает пустой список
+    response = await authenticated_client.get("/diseases/all/")
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+@pytest.mark.asyncio
+@patch("app.dao.disease.DiseaseDAO.find_all", new_callable=AsyncMock)
+async def test_get_all_diseases_with_data(
+    mock_find_all: AsyncMock,
+    authenticated_client: AsyncClient, # или authenticated_admin_client, если требуется админ
+    test_disease: DiseaseModel # Используем фикстуру для тестовых данных
+):
+    """
+    Тестирует эндпоинт /diseases/all/, когда в базе данных есть болезни.
+    """
+    # Создаем мок-объект, похожий на то, что возвращает DAO
+    # DiseaseDAO.find_all() обычно возвращает список объектов DiseaseModel
+    mock_disease_1 = DiseaseModel(
+        id=uuid.uuid4(),
+        name="Тестовая Болезнь 1 из all",
+        reason="Причина 1",
+        recommendations="Рекомендация 1"
+    )
+    mock_disease_2 = test_disease # Используем существующую фикстуру
+    mock_find_all.return_value = [mock_disease_1, mock_disease_2]
+
+    response = await authenticated_client.get("/diseases/all/")
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+    
+    # Проверяем, что данные в ответе соответствуют мок-объектам
+    # Порядок может быть не гарантирован, поэтому лучше проверять наличие
+    expected_names = {mock_disease_1.name, mock_disease_2.name}
+    response_names = {item["name"] for item in data}
+    assert response_names == expected_names
+
+    for item in data:
+        if item["name"] == mock_disease_1.name:
+            assert item["reason"] == mock_disease_1.reason
+            assert item["recommendation"] == mock_disease_1.recommendations
+        elif item["name"] == mock_disease_2.name:
+            assert item["reason"] == mock_disease_2.reason
+            assert item["recommendation"] == mock_disease_2.recommendations
