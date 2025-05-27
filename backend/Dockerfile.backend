@@ -8,6 +8,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
+# bcrypt bugfix
+RUN sed -i 's/version = _bcrypt.__about__.__version__/version = _bcrypt.__version__/' /usr/local/lib/python3.12/site-packages/passlib/handlers/bcrypt.py
 
 COPY . .
 
