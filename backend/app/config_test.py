@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 dotenv_path = os.path.join(os.path.dirname(__file__), "..", ".env.test")
 
-class TestSettings(BaseSettings):
+class ConfigTestSetup(BaseSettings):
     """
     Настройки для тестовой среды.
     Загружает переменные из файла .env.test или из переменных окружения.
@@ -22,14 +22,14 @@ class TestSettings(BaseSettings):
         extra='ignore'
     )
 
-test_settings = TestSettings()
+config_test_setup = ConfigTestSetup()
 
 def get_test_db_url() -> str:
     """Возвращает URL для подключения к тестовой базе данных."""
     return (
-        f"postgresql+asyncpg://{test_settings.DB_USER}:{test_settings.DB_PASSWORD}@"
-        f"{test_settings.DB_HOST}:{test_settings.DB_PORT}/{test_settings.DB_NAME}"
+        f"postgresql+asyncpg://{config_test_setup.DB_USER}:{config_test_setup.DB_PASSWORD}@"
+        f"{config_test_setup.DB_HOST}:{config_test_setup.DB_PORT}/{config_test_setup.DB_NAME}"
     )
 
 def get_test_auth_data():
-    return {"secret_key": test_settings.SECRET_KEY, "algorithm": test_settings.ALGORITHM}
+    return {"secret_key": config_test_setup.SECRET_KEY, "algorithm": config_test_setup.ALGORITHM}
