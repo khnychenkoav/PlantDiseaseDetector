@@ -9,7 +9,7 @@ export default function History() {
     const fetchHistory = async () => {
       try {
         console.log("axiosInstance:", axiosInstance);
-        const response = await axiosInstance.get("/history/all", {
+        const response = await axiosInstance.get("/history/all/", {
           withCredentials: true,
         });
 

@@ -19,7 +19,7 @@ export default function SignIn() {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const response = await axios.post(
-        '/auth/login',
+        '/auth/login/',
         {
           email: values.email,
           password: values.password
