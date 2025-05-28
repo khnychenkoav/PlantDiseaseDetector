@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://api.plantdetector.ru",
+  baseURL: "https://api.plantdetector.ru",
   withCredentials: true,
 });
 

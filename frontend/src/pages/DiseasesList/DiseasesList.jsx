@@ -8,7 +8,7 @@ export default function DiseasesList() {
   useEffect(() => {
     const fetchDiseases = async () => {
       try {
-        const response = await axios.get("http://api.plantdetector.ru/diseases/all/");
+        const response = await axios.get("/diseases/all");
         setDiseases(response.data);
       } catch (error) {
         console.error("Error fetching diseases:", error);
